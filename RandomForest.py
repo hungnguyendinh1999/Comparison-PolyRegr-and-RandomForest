@@ -23,7 +23,7 @@ class DTree:
 
     def train(self, X, Y):
         """
-        Train this model with input feature data and the corresponding class.
+        Train this model with input feature data and the corresponding label value.
         Required to run before being able to provide prediction.
         """
         self.model = self._grow(X, Y)
@@ -37,29 +37,28 @@ class DTree:
 
     def _grow(self, X, Y, depth=0):
         num_samples, num_features = X.shape
-        num_classes = len(np.unique(Y))
 
         best_mape = math.inf
         best_index = None
         best_threshold = None
         best_sets = None
 
-        # Base case, if there's only 1 class or has reach max depth
-        if num_classes == 1 or depth == self.max_depth:
+        # Base case, if there's only 1 threshold or has reach max depth
+        if len(np.unique(Y)) == 1 or depth == self.max_depth:
             return Node(value=np.mean(Y))
 
         # Loop through all the features
         for feature_index in range(num_features):
-            # Find thresholds
+            # Find all thresholds from the feature data
             thresholds = np.unique(X[:, feature_index])
 
-            # For each threshold, split the chosen feature set into half base on the value of chosen threshold.
-            # Our goal is to find the best threshold to divide classes
+            # For each threshold, split the chosen feature set into 2 subset based on the value of chosen threshold.
+            # Our goal is to find the best threshold to make the correct prediction later on
             for threshold in thresholds:
                 left_indices = np.where(X[:, feature_index] <= threshold)[0]
                 right_indices = np.where(X[:, feature_index] > threshold)[0]
 
-                # If one or the other side is empty, we don't consider it
+                # If one or the other side is empty, we don't consider this threshold
                 if len(left_indices) == 0 or len(right_indices) == 0:
                     continue
 
@@ -121,7 +120,7 @@ class RandomForest:
 
     def train(self, X, Y):
         """
-        Train this model with input feature data and the corresponding class.
+        Train this model with input feature data and the corresponding label value.
         Required to run before being able to provide prediction.
         """
         np.random.seed(self.seed)
