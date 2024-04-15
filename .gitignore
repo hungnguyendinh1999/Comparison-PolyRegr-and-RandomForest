@@ -162,3 +162,4 @@ cython_debug/
 # Local NYC Dataset folders
 /nyc-taxi-trip-duration/
 /data/
+*.csv
