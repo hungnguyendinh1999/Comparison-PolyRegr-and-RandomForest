@@ -86,16 +86,18 @@ data = read_csv("train.csv")
 data = preprocess(data)
 
 new_column = []
+distance_column = []
 for i in range(len(data)):
     # dayOfTheWeek and time in minute
     c = datetime_processing(data[i][1])
 
-    # Distance
-    c.append(ft_haversine_distance(float(data[i][3]), float(data[i][4]), float(data[i][5]), float(data[i][6])))
-
     new_column.append(c)
 
+    # Distance
+    distance_column.append([ft_haversine_distance(float(data[i][3]), float(data[i][4]), float(data[i][5]), float(data[i][6]))])
+
 data = np.hstack((data, np.array(new_column)))
+data = np.hstack((data, np.array(distance_column)))
 data = remove_feature(data, 1)  # pickup time
 data = remove_feature(data, 2)  # pickup long
 data = remove_feature(data, 2)  # pickup lat
